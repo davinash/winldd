@@ -69,11 +69,11 @@ public:
       m_deps[dllName] = dllPath;
       pImportDesc++;
     }
-    
+    FreeLibrary(hModule);
     for ( std::map<std::string, std::string>::iterator iter = m_deps.begin(); iter != m_deps.end(); ++iter ) {
       std::cout << "\t" << iter->first << " => " << iter->second << std::endl;
     }
-
+    /*
         
     //
     // Code to get list of Exported functions
@@ -110,6 +110,7 @@ public:
     }
 
     FreeLibrary(hModule);
+    */
 
   }
 private:
