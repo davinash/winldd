@@ -1,6 +1,6 @@
 # winldd - small utility for ldd on windows.
 
-Goto release folder for `x86` or `x64` downloads.
+Goto release folder for `download-x86` or `download-x64` downloads.
 
 
 
