@@ -69,10 +69,48 @@ public:
       m_deps[dllName] = dllPath;
       pImportDesc++;
     }
-    FreeLibrary(hModule);
+    
     for ( std::map<std::string, std::string>::iterator iter = m_deps.begin(); iter != m_deps.end(); ++iter ) {
       std::cout << "\t" << iter->first << " => " << iter->second << std::endl;
     }
+
+        
+    //
+    // Code to get list of Exported functions
+    //
+    IMAGE_DOS_HEADER *dosHeader;
+    dosHeader = (IMAGE_DOS_HEADER *)hModule; 
+
+    if (dosHeader->e_magic != IMAGE_DOS_SIGNATURE) 
+    {
+         //std::cout << "DOS HEADER";
+    }
+
+    IMAGE_NT_HEADERS *ntHeaders = (IMAGE_NT_HEADERS *)(((BYTE *)dosHeader) + dosHeader->e_lfanew); 
+
+    if (ntHeaders->Signature != 0x00004550)
+    {
+         //std::cout <<"NT HEADER";
+    }
+     
+    IMAGE_OPTIONAL_HEADER *optionalHeader = &ntHeaders->OptionalHeader; 
+        IMAGE_DATA_DIRECTORY *dataDirectory = &optionalHeader->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT]; 
+     
+    IMAGE_EXPORT_DIRECTORY *Exp;
+    Exp = (IMAGE_EXPORT_DIRECTORY *)((DWORD)dosHeader + dataDirectory->VirtualAddress); 
+
+    int count = 1;
+
+    ULONG * addressofnames = (ULONG*)((BYTE*) hModule + Exp->AddressOfNames);
+    
+    for(count = 0; count < Exp->NumberOfNames; count++)
+    {
+        char*functionname = (char*)((BYTE*) hModule + addressofnames[count]);
+        std::cout << functionname << std::endl;
+    }
+
+    FreeLibrary(hModule);
+
   }
 private:
   std::string m_file;
